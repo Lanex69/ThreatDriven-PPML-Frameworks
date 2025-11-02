@@ -1,7 +1,7 @@
 # Threat-Driven Frameworks for Privacy-Preserving Machine Learning (2017–2025)
 
 *Authors:*  
-Ayed Ahsan Ahmed, Mohammed Saad Shareef 
+Syed Ahsan Ahmed, Mohammed Saad Shareef 
 Lords Institute of Engineering and Technology, Hyderabad, India  
 
 ---

@@ -87,5 +87,6 @@ To contribute:
 
 ### 🔗 Contact
 For correspondence or collaboration:  
-📧 [insert your academic email]  
+📧 [insert your academic email]
+🌐 [LinkedIn: Mohammed Saad Shareef](https://www.linkedin.com/in/syed-ahsan-ahmed-17475a290/)
 🌐 [LinkedIn: Mohammed Saad Shareef](https://linkedin.com/in/yourprofile)

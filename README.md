@@ -1,13 +1,13 @@
 # Threat-Driven Frameworks for Privacy-Preserving Machine Learning (2017–2025)
 
 *Authors:*  
-Syed Ahsan Ahmed, Mohammed Saad Shareef 
+Mohammed Saad Shareef, Syed Ahsan Ahmed
 
 Lords Institute of Engineering and Technology, Hyderabad, India  
 
 ---
 
-### 🧠 Overview
+###  Overview
 This repository accompanies the survey paper:
 
 > *Threat-Driven Frameworks for Privacy-Preserving Machine Learning: A Practitioner’s Guide (2017–2025)*  
@@ -17,7 +17,7 @@ The repository provides all supplementary materials—benchmark tables, figures,
 
 ---
 
-### 📁 Repository Contents
+###  Repository Contents
 
 | Folder | Description |
 |--------|--------------|
@@ -28,7 +28,7 @@ The repository provides all supplementary materials—benchmark tables, figures,
 
 ---
 
-### 📊 Key Files
+###  Key Files
 
 | File | Description |
 |------|--------------|
@@ -40,7 +40,7 @@ The repository provides all supplementary materials—benchmark tables, figures,
 
 ---
 
-### 🧩 Methodology Summary
+###  Methodology Summary
 - *Data collection:* Canonical threat papers (2015–2024) via Scholarcy summarization.  
 - *Framework mapping:* Evaluated frameworks include Opacus, TensorFlow Privacy, Flower, FATE, CrypTen, TenSEAL, Microsoft SEAL, and NVIDIA FLARE.  
 - *Synthesis:* Mapped each framework’s defensive scope (DP, FL, SMPC, HE) to corresponding threat vectors.  
@@ -48,7 +48,7 @@ The repository provides all supplementary materials—benchmark tables, figures,
 
 ---
 
-### 📈 How to Cite
+###  How to Cite
 If you use this repository, please cite:
 @article{shareef2025threatdrivenppml,
 title={Threat-Driven Frameworks for Privacy-Preserving Machine Learning: A Practitioner’s Guide (2017–2025)},
@@ -59,7 +59,7 @@ journal={Preprint / Workshop Submission}
 
 ---
 
-### 🧱 Future Work
+###  Future Work
 This repository will expand with the experimental follow-up paper:
 > *Secure and Private Fine-Tuning of LLMs with Parameter-Efficient Methods (DP + LoRA)*
 
@@ -67,13 +67,13 @@ That companion repo (tentative name: Privtune-DP-LoRA-Benchmark) will benchmark 
 
 ---
 
-### 📜 License
+###  License
 This project is licensed under the *MIT* license.  
 You are free to reuse, modify, or distribute the material with appropriate credit.
 
 ---
 
-### 🤝 Contributing
+###  Contributing
 Pull requests are welcome for:
 - Adding new frameworks or metrics  
 - Extending case studies  
@@ -86,7 +86,7 @@ To contribute:
 
 ---
 
-### 🔗 Contact
+###  Contact
 For correspondence or collaboration: 
-🌐 [LinkedIn: Syed Ahsan Ahmed](https://www.linkedin.com/in/syed-ahsan-ahmed-17475a290/)
-🌐 [LinkedIn: Mohammed Saad Shareef](https://linkedin.com/in/yourprofile)
+[LinkedIn: Syed Ahsan Ahmed](https://www.linkedin.com/in/syed-ahsan-ahmed-17475a290/)
+[LinkedIn: Mohammed Saad Shareef]((https://www.linkedin.com/in/mohammed-saad-shareef-019397265/))

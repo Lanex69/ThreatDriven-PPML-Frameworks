@@ -1,0 +1,10 @@
+torch>=2.0.0
+torchvision
+opacus>=1.1.0
+numpy
+pandas
+matplotlib
+tqdm
+# optional: tensorflow, tensorflow-privacy (only if you plan to run TF accountant)
+# tensorflow>=2.10.0
+# tensorflow-privacy

@@ -5,6 +5,10 @@ authors:
   - given-names: Mohammed Saad
     family-names: Shareef
     affiliation: "Lords Institute of Engineering and Technology, Hyderabad, India"
+    given-names: Syed Ahsan 
+    family-names: Ahmed
+    affiliation: "Lords Institute of Engineering and Technology, Hyderabad, India"
+
 keywords:
   - privacy-preserving machine learning
   - differential privacy

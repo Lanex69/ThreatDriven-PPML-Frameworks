@@ -1,137 +1,232 @@
-\appendix
-\section*{Appendix A. Worked example — privacy accounting for DP-SGD}
-\label{appendix:privacy_accounting}
+% paper/appendix_A.tex
+% --- Worked example: DP-SGD privacy accounting (reproducible recipe) ---
 
-This appendix gives a concise, reproducible recipe for computing privacy loss \((\varepsilon,\delta)\) for a DP-SGD training run using Rényi Differential Privacy (RDP) / moments-accountant accounting. We present the mathematical sketch, a worked parameter choice, an example results table (illustrative — replace with run outputs), and minimal code (Opacus and TensorFlow-Privacy) to reproduce the accounting.
+\section*{Appendix A — WORKED EXAMPLE: PRIVACY ACCOUNTING FOR DP-SGD}
+\phantomsection\label{appendix:privacy_accounting}
 
-\subsection*{A.1 DP-SGD: mechanism and notation}
+This appendix provides a concise, reproducible recipe for computing privacy loss \((\varepsilon,\delta)\) for DP-SGD training using Rényi Differential Privacy (RDP) / moments-accountant accounting. It includes (i) notation and conceptual sketch, (ii) a practical worked recipe, (iii) the \textbf{actual aggregated results} from our runs (three seeds per noise multiplier \(\sigma\)), and (iv) minimal Opacus / TensorFlow-Privacy skeletons to reproduce the accounting.
+
+\section*{A.1 DP-SGD: MECHANISM AND NOTATION}
 We use the standard DP-SGD setup (Abadi et al., 2016):
 \begin{itemize}
   \item Dataset size: \(N\).
   \item Batch size: \(b\).
-  \item Sampling probability: \(q=b/N\).
+  \item Sampling probability: \(q = \frac{b}{N}\).
   \item Number of epochs: \(E\).
-  \item Total gradient steps: \(S=\left\lceil\frac{N}{b}\right\rceil\cdot E\).
+  \item Total gradient steps: \(S = \left\lceil \frac{N}{b}\right\rceil \cdot E\).
   \item Per-example clipping norm: \(C\).
-  \item Gaussian noise multiplier: \(\sigma\) (noise variance \(\sigma^2 C^2\)).
-  \item Target \(\delta\) (commonly \(\le 1/N\); we use \(\delta=10^{-5}\) in examples).
+  \item Gaussian noise multiplier: \(\sigma\) (noise added has variance \(\sigma^2 C^2\)).
+  \item Target \(\delta\) (commonly chosen \(\le 1/N\); we use \(\delta=10^{-5}\) in examples and experiments).
 \end{itemize}
 
-A randomized algorithm \(\mathcal{M}\) is \((\varepsilon,\delta)\)-differentially private if for all neighbouring datasets \(D,D'\) and measurable sets \(S\):
+A randomized mechanism \(\mathcal{M}\) is \((\varepsilon,\delta)\)-differentially private if for all neighbouring datasets \(D,D'\) and measurable sets \(S\):
 \[
 \Pr[\mathcal{M}(D)\in S] \le e^\varepsilon \Pr[\mathcal{M}(D')\in S] + \delta.
 \]
 
-DP-SGD composes privacy loss over training steps. The RDP accountant computes per-step Rényi divergences, composes them additively across \(S\) steps, and converts composed RDP to \((\varepsilon,\delta)\).
+DP-SGD composes per-step privacy loss across training steps. The RDP accountant computes per-step Rényi divergences and composes them additively across \(S\) steps; the composed RDP is then converted to \((\varepsilon,\delta)\) by numerical optimization over the Rényi order \(\alpha\).
 
-\subsection*{A.2 RDP \textrightarrow{} \((\varepsilon,\delta)\) (conceptual)}
-Let \(D_\alpha\) be the order-\(\alpha\) Rényi divergence accumulated across all steps. For any \(\alpha>1\),
+\vspace{6pt}
+\section*{A.2 RDP $\to$ ($\varepsilon,\delta$) (conceptual)}
+Let \(D_\alpha\) be the order-\(\alpha\) Rényi divergence accumulated across all steps. Then for any \(\alpha>1\),
 \[
-\varepsilon(\alpha)=\frac{D_\alpha-\log\delta}{\alpha-1}.
+\varepsilon(\alpha)=\frac{D_\alpha - \log \delta}{\alpha - 1}.
 \]
-The final \(\varepsilon\) is \(\min_{\alpha>1}\varepsilon(\alpha)\). Practical libraries (Opacus, TF-Privacy) perform this optimization numerically; prefer library routines over hand optimization.
+The final \(\varepsilon\) is \(\min_{\alpha > 1} \varepsilon(\alpha)\). Practical libraries (Opacus, TensorFlow-Privacy) perform this optimization numerically—prefer the library routines rather than hand-optimizing.
 
-\subsection*{A.3 Worked recipe (practical)}
+\vspace{6pt}
+\section*{A.3 WORKED RECIPE (practical)}
 \begin{enumerate}
-  \item Choose dataset and model (toy example: MNIST, \(N=60{,}000\)).
-  \item Fix hyperparameters: e.g., \(b=256\), \(E=10\), \(C=1.0\), try \(\sigma\in\{0.5,1.0,2.0\}\).
-  \item Compute \(q=b/N\) and \(S=\lceil N/b\rceil\cdot E\).
-  \item Run DP-SGD with chosen \(\sigma\). Use the library’s privacy accounting API to get \(\varepsilon\) for chosen \(\delta\) (e.g., \(1\times10^{-5}\)).
-  \item Record \((\sigma, C, \varepsilon, \delta, \text{test-acc}, \text{runtime})\) in the results CSV.
+  \item Choose dataset/model (toy example: MNIST, \(N=60{,}000\)).
+  \item Fix hyperparameters: batch \(b\), epochs \(E\), clip \(C\), try several \(\sigma\)-values.
+  \item Compute \(q=b/N\) and \(S=\lceil N/b\rceil \cdot E\).
+  \item Run DP-SGD using Opacus (PyTorch) or TF-Privacy (TensorFlow). Use the library's privacy accounting API to obtain \(\varepsilon\) for chosen \(\delta\).
+  \item Record rows: \(\sigma, C, \varepsilon, \delta, \text{test-acc}, \text{runtime}, \text{seed}\) in \texttt{results/eps\_results\_final.csv}.
 \end{enumerate}
 
-\subsection*{A.4 Example results (illustrative)}
-\begin{table}[h!]
+\vspace{6pt}
+\section*{A.4 EXPERIMENT METADATA (this work)}
+The aggregated runs reported in the repository used:
+\begin{itemize}
+  \item Dataset: MNIST, \(N=60{,}000\) (train).
+  \item Batch \(b=128\), Epochs \(E=15\) \(\Rightarrow\) Steps \(S=7035\) (as recorded in CSV).
+  \item Clip norm \(C=1.0\).
+  \item Seeds: \{42, 43, 44\} (three independent runs per \(\sigma\)).
+  \item Target \(\delta=1\times10^{-5}\).
+  \item Opacus version: 1.5.4; PyTorch: 2.9.1+cpu (as recorded in CSV metadata).
+\end{itemize}
+
+\vspace{6pt}
+\section*{A.5 AGGREGATED RESULTS (MEAN \(\pm\) STD ACROSS SEEDS)}
+Table~\ref{tab:agg_results} shows the aggregated (per-\(\sigma\)) accounting and utility numbers computed from \texttt{results/eps\_results\_final.csv} that accompany this paper. For baseline (non-private) runs \(\varepsilon\) is not applicable.
+
+\begin{table}[htb]
 \centering
-\caption{Illustrative DP-SGD accounting for MNIST (replace \(\varepsilon\) with your run outputs).}
-\begin{tabular}{lcccccc}
+\caption{DP-SGD aggregated accounting (MNIST; three seeds per \(\sigma\); batch=128; epochs=15; steps=7035; \(\delta=1\times10^{-5}\)).}
+\label{tab:agg_results}
+\begin{tabular}{l c c c c}
 \toprule
-Noise \(\sigma\) & Clip \(C\) & Epochs & Batch \(b\) & Steps \(S\) & \(\delta\) & \(\varepsilon\) (illustrative) \\
+\textbf{Noise }$\sigma$ & \(\varepsilon\) (mean) & Test acc (mean) & Test acc (std) & runs \\
 \midrule
-0.5 & 1.0 & 10 & 256 & 2350 & $1\times10^{-5}$ & 4.8 \\
-1.0 & 1.0 & 10 & 256 & 2350 & $1\times10^{-5}$ & 2.3 \\
-2.0 & 1.0 & 10 & 256 & 2350 & $1\times10^{-5}$ & 1.1 \\
+baseline & ---       & 0.9244 & 0.0013 & 3 \\
+0.25     & 118.6396  & 0.8408 & 0.0021 & 3 \\
+0.50     & 8.1861    & 0.8410 & 0.0020 & 3 \\
+0.75     & 1.8250    & 0.8409 & 0.0021 & 3 \\
+1.00     & 0.9152    & 0.8407 & 0.0019 & 3 \\
+1.50     & 0.4869    & 0.8401 & 0.0021 & 3 \\
+2.00     & 0.3373    & 0.8401 & 0.0012 & 3 \\
+3.00     & 0.2114    & 0.8395 & 0.0018 & 3 \\
+4.00     & 0.1549    & 0.8390 & 0.0013 & 3 \\
 \bottomrule
 \end{tabular}
-\label{tab:dp_examples}
 \end{table}
 
-Include test accuracy and wall-clock runtime columns from your runs to show privacy–utility–cost trade-offs.
+\textbf{Notes on the table.}
+\begin{itemize}
+  \item The baseline rows are the non-private runs (no Opacus privacy engine attached) and therefore have no \(\varepsilon\) (marked `---`).
+  \item The large \(\varepsilon\) at \(\sigma=0.25\) stems from the relatively small noise multiplier combined with the sampling / steps schedule (these numbers are reproduced directly from the Opacus accountant output saved in \texttt{results/eps\_results\_final.csv}).
+  \item Accuracy means and standard deviations were computed over the three seeds reported in the CSV.
+  \item Steps \(S\), epoch count, batch size, and \(\delta\) are recorded in \texttt{results/eps\_results\_final.csv} and were used by the accountant to compute the shown \(\varepsilon\).
+\end{itemize}
 
-\subsection*{A.5 Minimal reproducible code}
-Below are minimal skeletons to compute \(\varepsilon\) using (a) Opacus (PyTorch) and (b) TensorFlow-Privacy (accountant). Run these in the notebook you provide in the repo so outputs and CSV rows are reproducible.
+\vspace{6pt}
+\section*{A.6 INCLUDING THE PRIVACY-UTILITY FIGURE}
+% Use \texorpdfstring in the caption if you include math
+\begin{figure}[htb]
+    \centering
+    % Using 0.9\columnwidth for standard single-column width
+    \includegraphics[width=0.9\columnwidth]{epsilon_vs_accuracy.png}
+    \caption{DP-SGD Privacy–Utility Curve (MNIST; 15 epochs; batch=128). 
+    Horizontal axis is the privacy budget $\varepsilon$ (log scale). 
+    The non-private baseline accuracy appears in the main paper figure.}
+    \label{fig:dp_privacy_utility_1}
+\end{figure}
+\FloatBarrier
 
-\paragraph{Opacus (PyTorch) — skeleton}
-\begin{verbatim}
+\vspace{6pt}
+\noindent\textbf{Notes on the figure:} ensure the file 
+\texttt{epsilon\_vs\_accuracy.png} (or PDF) is uploaded to one 
+of the paths listed in \texttt{\graphicspath}. If you have an SVG, convert 
+it to PDF or PNG first.
+
+\vspace{6pt}
+\section*{A.7 MINIMAL REPRODUCIBLE CODE (skeletons)}
+Place these snippets inside the repository notebook \texttt{notebooks/privacy\_accounting.py} or \texttt{notebooks/privacy\_accounting.ipynb} to reproduce privacy accounting and to re-generate the \texttt{eps\_results\_final.csv} file.
+
+\vspace{6pt}
+\noindent\textbf{Opacus (PyTorch) -- skeleton}
+\begin{small}
+\begin{lstlisting}[language=Python]
 # pip install torch torchvision opacus
 import torch
 from torch import nn, optim
 from opacus import PrivacyEngine
-from torchvision import datasets, transforms
+from torchvision import datasets,transforms
 from torch.utils.data import DataLoader
+import time, numpy as np
 
 # Hyperparams
-N = 60000; batch = 256; epochs = 10
-sigma = 1.0; clip = 1.0; delta = 1e-5
+N = 60000
+batch = 128
+epochs = 15
+sigma = 1.0
+clip = 1.0
+delta = 1e-5
+seed = 42
 
+# Data loader
 transform = transforms.Compose([transforms.ToTensor()])
 train_ds = datasets.MNIST('./data', train=True, download=True, transform=transform)
+test_ds  = datasets.MNIST('./data', train=False, download=True, transform=transform)
 train_loader = DataLoader(train_ds, batch_size=batch, shuffle=True)
+test_loader  = DataLoader(test_ds, batch_size=1024, shuffle=False)
 
-model = nn.Sequential(nn.Flatten(), nn.Linear(28*28,256), nn.ReLU(), nn.Linear(256,10))
-opt = optim.SGD(model.parameters(), lr=0.01)
+# Model
+model = nn.Sequential(nn.Flatten(), nn.Linear(28*28,256), nn.ReLU(),nn.Linear(256,10))
+opt = optim.SGD(model.parameters(),lr=0.01)
 criterion = nn.CrossEntropyLoss()
+steps = int(np.ceil(N / batch) * epochs)
+sample_rate = batch / N
 
-privacy_engine = PrivacyEngine(
-    model,
-    sample_rate=batch / N,
+# Make private
+privacy_engine = PrivacyEngine()
+model, opt, privacy_train_loader = privacy_engine.make_private(
+    module=model,
+    optimizer=opt,
+    data_loader=train_loader,
     noise_multiplier=sigma,
     max_grad_norm=clip,
 )
-privacy_engine.attach(opt)
 
+# Train
+start = time.time()
 for _ in range(epochs):
-    for x,y in train_loader:
+    for x,y in privacy_train_loader:
         opt.zero_grad()
         loss = criterion(model(x), y)
         loss.backward()
         opt.step()
+runtime = time.time() - start
 
-eps = privacy_engine.get_epsilon(delta=delta)
-print(f"Computed epsilon (delta={delta}): {eps:.3f}")
-\end{verbatim}
+# Get epsilon
+print(f"sample_rate={sample_rate:.6f}, steps={steps}")
+eps = None
+try:
+    eps = privacy_engine.get_epsilon(delta=delta)
+except Exception:
+    try:
+        eps=privacy_engine.accountant.get_epsilon(delta)
+    except Exception:
+        eps = float("nan")
+print(f"Computed epsilon (delta={delta}): {eps:.6f}")
+\end{lstlisting}
+\end{small}
 
-\paragraph{TensorFlow-Privacy (accountant helper) — skeleton}
-\begin{verbatim}
+\vspace{6pt}
+\noindent\textbf{TensorFlow-Privacy (accountant helper) -- skeleton}
+\begin{small}
+\begin{lstlisting}[language=Python]
 # pip install tensorflow tensorflow-privacy
 from tensorflow_privacy.privacy.analysis import rdp_accountant
 
-N = 60000; batch = 256; epochs = 10; sigma = 1.0; delta = 1e-5
+N = 60000
+batch = 128
+epochs = 15
+sigma = 1.0
+delta = 1e-5
 q = batch / N
 steps = int((N / batch) * epochs)
 orders = [1 + x/10. for x in range(1, 100)]
 
-rdp = rdp_accountant.compute_rdp(q=q, noise_multiplier=sigma, steps=steps, orders=orders)
+rdp = rdp_accountant.compute_rdp(
+    q=q, 
+    noise_multiplier=sigma, 
+    steps=steps,
+    orders=orders
+)
 eps, opt_order = rdp_accountant.get_privacy_spent(orders, rdp, target_delta=delta)
-print(f"Epsilon: {eps:.3f} at order {opt_order}")
-\end{verbatim}
+print(f"Epsilon: {eps:.6f} at optimal order {opt_order}")
+\end{lstlisting}
+\end{small}
 
-\subsection*{A.6 Practical notes and recommended defaults}
+\vspace{6pt}
+\section*{A.8 PRACTICAL NOTES AND RECOMMENDED DEFAULTS}
 \begin{itemize}
-  \item \textbf{Choice of \(\delta\):} use \(\delta\le 1/N\). For MNIST (\(N=60{,}000\)) \(\delta=10^{-5}\) is reasonable for illustration; for sensitive data prefer smaller \(\delta\).
-  \item \textbf{Clip norm \(C\):} typical values 0.5–1.0; tune with learning rate.
-  \item \textbf{Noise multiplier \(\sigma\):} larger \(\sigma\) reduces \(\varepsilon\) (better privacy) but reduces utility — try 0.5–2.0 initially.
-  \item \textbf{Repeats and reporting:} run \(\ge3\) seeds and report mean\(\pm\)std for accuracy and, optionally, \(\varepsilon\).
-  \item \textbf{Runtime:} always log wall-clock time to show computational cost.
+  \item \textbf{Choice of \(\delta\):} a common rule is \(\delta \le 1/N\). For MNIST (\(N=60{,}000\)) using \(\delta=10^{-5}\) is reasonable for illustration; for sensitive datasets choose smaller \(\delta\) (e.g., \(10^{-6}\) or \(1/N^2\)).
+  \item \textbf{Clip norm \(C\):} typical values are 0.5--1.0. Too-small \(C\) can harm optimization; tune \(C\) with the learning rate.
+  \item \textbf{Noise multiplier \(\sigma\):} larger \(\sigma\) reduces \(\varepsilon\) (tighter privacy) but harms utility. Try 0.5--2.0 as starting points.
+  \item \textbf{Repeat runs:} run \(\ge 3\) seeds and report mean\(\pm\)std for accuracy and optionally for \(\varepsilon\) if accountant variance arises across seeds or masking modes.
+  \item \textbf{Runtime logging:} record wall-clock time to reflect computational cost; this helps practitioners weigh privacy–utility–cost trade-offs.
 \end{itemize}
 
-\subsection*{A.7 Reproducibility checklist (for the repo)}
-\begin{enumerate}
-  \item Notebook: \texttt{notebooks/appendix\_A\_privacy\_accounting.ipynb} with Opacus cells: setup → model → train → accountant → save results.
-  \item \texttt{requirements.txt} (exact versions: PyTorch, Opacus, TF-Privacy if used).
-  \item \texttt{results/} CSV rows: sigma, C, epochs, batch, steps, delta, epsilon, test\_acc, runtime, seed.
-  \item README: one command to run the notebook (and Docker/env recipe if available).
-\end{enumerate}
+\vspace{6pt}
+\section*{A.9 REPRODUCIBILITY CHECKLIST (for the repo)}
+\begin{itemize}
+  \item \textbf{Environment:} include a `requirements.txt` with exact versions (we record Opacus/Torch versions in CSV).
+  \item \textbf{Determinism:} full bitwise reproducibility on GPU is difficult; run the accounting on CPU for deterministic privacy results or explicitly record device/seed and accept small run-to-run variation.
+  \item \textbf{Privacy orders:} use a dense set of orders for RDP → \((\varepsilon,\delta)\) conversion (the 'orders' list above works well).
+  \item \textbf{Runtime logging:} record wall-clock time per run and total cost to help practitioners evaluate compute vs privacy trade-offs.
+\end{itemize}
 
-\paragraph{Note.} In the main text (Section 4.1.2) cite this appendix with: ``See Appendix~A for a reproducible DP-SGD accounting example and the repository for the full notebook.''
-
+\vspace{6pt}
+\noindent\textbf{Cite this appendix:} ``See Appendix~\ref{appendix:privacy_accounting} for a reproducible DP-SGD accounting example and the companion repository for notebooks and raw results.''

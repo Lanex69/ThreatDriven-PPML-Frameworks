@@ -1,4 +1,4 @@
-# plot_epsilon_vs_accuracy_minimal.py
+# plot_epsilon_vs_accuracy.py
 """
 Minimal, publication-ready IEEE-style Privacy–Utility plot (NO inset).
 Cleanest possible version for Appendix A.
@@ -10,8 +10,8 @@ Cleanest possible version for Appendix A.
 - Very light grid
 - Per-seed points optional
 
-Run: python plot_epsilon_vs_accuracy_minimal.py
-Saves: figures/epsilon_vs_accuracy_minimal.(png/svg)
+Run: python plot_epsilon_vs_accuracy.py
+Saves: figures/epsilon_vs_accuracy.(png/svg)
 """
 
 from pathlib import Path
@@ -23,8 +23,8 @@ from matplotlib.ticker import AutoMinorLocator
 # ---------- Config ----------
 OUT_DIR = Path("figures")
 OUT_DIR.mkdir(exist_ok=True)
-OUT_PNG = OUT_DIR / "epsilon_vs_accuracy_minimal.png"
-OUT_SVG = OUT_DIR / "epsilon_vs_accuracy_minimal.svg"
+OUT_PNG = OUT_DIR / "epsilon_vs_accuracy.png"
+OUT_SVG = OUT_DIR / "epsilon_vs_accuracy.svg"
 PLOT_PER_SEED = True
 
 # ---------- Locate CSV ----------
@@ -139,9 +139,12 @@ ax.set_title("DP-SGD: Privacy–Utility Curve (Minimal)")
 
 # Limits
 if len(agg) > 0:
-    ymin, ymax = agg["acc_mean"].min(), agg["acc_mean"].max()
-    pad = (ymax - ymin) * 0.25 if ymax > ymin else 0.0005
-    ax.set_ylim(ymin - pad, ymax + pad)
+    min_dp_acc = agg["acc_mean"].min()
+    max_baseline_acc = baseline_df["test_acc"].max() if len(baseline_df) > 0 else min_dp_acc
+    # Set Y-min slightly below the lowest DP point, and Y-max slightly above the baseline.
+    ymin = min_dp_acc - 0.005 
+    ymax = max_baseline_acc + 0.005
+    ax.set_ylim(ymin, ymax)
 
 # Light grid
 ax.grid(True, linestyle="--", linewidth=0.45, alpha=0.4)

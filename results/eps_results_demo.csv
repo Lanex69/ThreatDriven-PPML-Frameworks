@@ -1,0 +1,3 @@
+sigma,clip,epochs,batch,steps,delta,epsilon,test_acc,runtime_s,seed,opacus_version,torch_version
+,1.0,1,128,469,1e-05,,0.8145,6.506141185760498,42,1.5.4,2.9.1+cpu
+1.0,1.0,1,128,469,1e-05,0.25349600534589695,0.6349,35.195942878723145,42,1.5.4,2.9.1+cpu

@@ -1,0 +1,89 @@
+# Decision Matrix for Privacy-Preserving ML Frameworks
+
+This directory contains `decision_matrix.csv`, a practitioner-oriented comparison of major Privacy-Preserving Machine Learning (PPML) frameworks and techniques evaluated in the paper:
+
+**_Benchmarking the Practical Adoption of Privacy-Preserving Machine Learning:  
+A Tool-Centric and Framework-Oriented Review (2017–2025)_**
+
+---
+
+## Purpose
+
+The decision matrix helps practitioners and researchers compare PPML frameworks across:
+
+- **Threat coverage** (membership inference, inversion, extraction, poisoning, gradient leakage)
+- **Techniques** (DP, FL, SMPC, HE, hybrid patterns)
+- **Maturity** (research prototype → production-ready)
+- **Usability** (developer friction, ecosystem integration)
+- **Scalability** (suitability for large models or distributed workloads)
+- **Performance characteristics**
+- **Real-world adoption**
+- **Provenance** (data source: experiments, docs, literature)
+
+This matrix is **not** an automated ranking — it is a structured reference to support engineering decisions.
+
+---
+
+##  File included
+
+### `decision_matrix.csv`
+
+Columns:
+
+| Column | Meaning |
+|--------|---------|
+| `framework` | Name of PPML framework or technique. |
+| `category` | DP / FL / SMPC / HE / Hybrid. |
+| `threat_covered` | Which privacy/security risks this framework mitigates. |
+| `maturity` | High / Medium / Emerging level of readiness. |
+| `usability` | Developer experience, ease of integration. |
+| `scalability` | Suitability for large-scale or distributed training. |
+| `performance_notes` | Overheads, runtime implications, relevant constraints. |
+| `real_world_adoption` | How widely it is used beyond academia. |
+| `provenance` | *paper_run*, *literature*, *tool_doc*, or *repo_link*. |
+| `example_reference` | URL or citation for validation. |
+
+---
+
+##  Provenance codes
+
+| Code | Meaning |
+|------|---------|
+| `paper_run` | Values measured directly through experiments in this repo. |
+| `literature` | Derived from academic papers or authoritative surveys. |
+| `tool_doc` | Values taken from official framework documentation. |
+| `repo_link` | Derived from external implementations or reference repos. |
+
+This helps reviewers validate transparency.
+
+---
+
+## 🔧 Extending the Matrix
+
+To add a new framework:
+
+1. Add a row to `decision_matrix.csv`.  
+2. Provide accurate `provenance`.  
+3. Optionally link a benchmark or note under `performance_notes`.  
+4. Submit a pull request (see root `CONTRIBUTING` section).
+
+---
+
+##  Relation to the Paper
+
+This matrix corresponds to content in the following sections:
+
+- **Threat-to-Defense Mapping**
+- **Framework Landscape**
+- **Practitioner Decision Tree**
+- **Guidelines for Deployment**
+
+It is meant to **complement** the figures and analysis, not replace them.
+
+---
+
+##  Contact
+
+For issues or extensions, please open an issue or connect via LinkedIn:
+
+https://www.linkedin.com/in/mohammed-saad-shareef-019397265/

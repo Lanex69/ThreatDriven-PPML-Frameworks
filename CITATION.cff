@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+message: "If you use this repository or its results, please cite the associated preprint."
+title: "Benchmarking the Practical Adoption of Privacy-Preserving Machine Learning: A Tool-Centric and Framework-Oriented Review (2017–2025)"
+authors:
+  - given-names: Mohammed Saad
+    family-names: Shareef
+    affiliation: "Lords Institute of Engineering and Technology, Hyderabad, India"
+keywords:
+  - privacy-preserving machine learning
+  - differential privacy
+  - federated learning
+  - secure multiparty computation
+  - homomorphic encryption
+  - PPML frameworks
+  - threat modeling
+  - privacy-utility tradeoffs
+license: "MIT"
+url: "https://github.com/YOUR_USERNAME/YOUR_REPOSITORY_NAME"
+repository-code: "https://github.com/YOUR_USERNAME/YOUR_REPOSITORY_NAME"
+type: "software"
+version: "1.0.0"
+date-released: "2025-01-01"
+abstract: >
+  This repository accompanies the preprint
+  “Benchmarking the Practical Adoption of Privacy-Preserving Machine Learning:
+  A Tool-Centric and Framework-Oriented Review (2017–2025)”.
+  It includes reproducible DP-SGD experiments, privacy–utility plots, threat-to-defense
+  mappings, and a practitioner-focused decision matrix comparing major PPML frameworks.

@@ -1,10 +1,6 @@
-# Python / general
+# Python
 __pycache__/
 *.pyc
-.env
-.env.*
-.vscode/
-.DS_Store
 
 # Jupyter
 .ipynb_checkpoints/
@@ -12,23 +8,6 @@ __pycache__/
 # Raw data (ignore)
 data/
 
-# Ignore all results by default EXCEPT processed small CSVs for the paper
-# results/*
-# !results/eps_results_example.csv     # allow committing example CSV
-# !results/README.md                   # allow small docs
-
-# # Ignore all figures by default EXCEPT paper figs
-# figures/*
-# !figures/epsilon_vs_accuracy.png
-# !figures/epsilon_vs_accuracy.svg
-# !figures/README.md
-
-
 # Virtual envs
 venv/
-env/
-.venv/
-
-# mac/windows editor files
-*.swp
-Thumbs.db
+.env

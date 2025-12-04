@@ -1,92 +1,133 @@
 # Threat-Driven Frameworks for Privacy-Preserving Machine Learning (2017–2025)
 
-*Authors:*  
-Mohammed Saad Shareef, Syed Ahsan Ahmed
-
+**Author:** Mohammed Saad Shareef, Syed Ahsan Ahmed  
 Lords Institute of Engineering and Technology, Hyderabad, India  
 
 ---
 
-###  Overview
-This repository accompanies the survey paper:
+##  Overview
 
-> *Threat-Driven Frameworks for Privacy-Preserving Machine Learning: A Practitioner’s Guide (2017–2025)*  
-> Focused on mapping privacy threats (membership inference, model inversion, data extraction, poisoning, gradient leakage) to practical mitigation frameworks and decision matrices.
+This repository accompanies the preprint:
 
-The repository provides all supplementary materials—benchmark tables, figures, framework metrics, and extended notes—to support reproducibility and practitioner reference.
+**_Benchmarking the Practical Adoption of Privacy-Preserving Machine Learning:  
+A Tool-Centric and Framework-Oriented Review (2017–2025)_**
 
----
+The repository contains all supplemental material required to **reproduce the DP-SGD experiment (Appendix A)**, generate figures, and reference framework-selection tools such as the **practitioner decision tree** and **threat→defense map**.
 
-###  Repository Contents
+It is designed for:
 
-| Folder | Description |
-|--------|--------------|
-| /paper | Paper outline, figures (flowchart, decision tree), and draft PDF. |
-| /data | Benchmark data: attack-defense mapping and framework decision matrices. |
-| /case-studies | Short applied notes (Healthcare, Edge, Finance, Smart City). |
-| /extended-bibliography | Scholarcy-based summaries of 6 canonical threat papers. |
+- Researchers evaluating PPML tools (Opacus, TF-Privacy, FATE, FLARE, CrypTen, SEAL, Flower)  
+- Practitioners comparing DP, FL, SMPC, HE, and hybrid frameworks  
+- Students studying privacy–utility tradeoffs  
+- Reviewers verifying reproducibility
 
 ---
 
-###  Key Files
+## Repository Structure
 
-| File | Description |
-|------|--------------|
-| data/attack_defense_mapping.csv | Core dataset mapping threats → impacts → mitigations. |
-| data/decision_matrix.csv | Comparative matrix of framework maturity, usability, and adoption. |
-| paper/tables/Table1_Attack_Defense.md | Table used in Section 3 of the paper. |
-| paper/figures/figure1_flowchart.svg | Visual mapping of threats to defense techniques. |
-| case-studies/healthcare_FED-EHR.md | Privacy-preserving FL deployment in EHR settings. |
+| Path | Description |
+|------|-------------|
+| `run_privacy_accounting.py` | Canonical DP-SGD MNIST experiment (Appendix A). |
+| `plot_epsilon_vs_accuracy.py` | Minimal IEEE-style privacy–utility curve generator. |
+| `notebooks/privacy_accounting.ipynb` | Interactive demo (quick mode) calling the script. |
+| `figures/` | All final paper figures (threat→defense map, decision tree, Appendix plot). |
+| `results/` | Processed CSV results used in figures (`eps_results_final.csv` or demo CSV). |
+| `paper/` | LaTeX source + preprint version (replace with final PDF). |
+| `decision_matrix.csv` | Practitioner-oriented comparison of PPML frameworks (DP, FL, HE, SMPC). |
+| `requirements.txt` | Reproducible environment for all scripts and notebooks. |
 
----
-
-###  Methodology Summary
-- *Data collection:* Canonical threat papers (2015–2024) via Scholarcy summarization.  
-- *Framework mapping:* Evaluated frameworks include Opacus, TensorFlow Privacy, Flower, FATE, CrypTen, TenSEAL, Microsoft SEAL, and NVIDIA FLARE.  
-- *Synthesis:* Mapped each framework’s defensive scope (DP, FL, SMPC, HE) to corresponding threat vectors.  
-- *Decision matrix:* Built based on criteria—usability, scalability, and real-world adoption.
+Raw datasets (MNIST) are **not** committed and are downloaded automatically via `torchvision`.
 
 ---
 
-###  How to Cite
+## Quick Start (Reproduce Appendix A)
+
+### 1 Install dependencies
+python -m venv venv
+source venv/bin/activate   # Windows: venv\Scripts\activate
+pip install -r requirements.txt
+
+### 2️ Run the DP-SGD experiment (quick demo)
+This runs 1 epoch, 1 seed, sigma=1.0 → fast reproducibility check.
+
+python run_privacy_accounting.py --quick --out results/eps_results_demo.csv
+
+### 3️ Generate the Privacy–Utility Curve
+python plot_epsilon_vs_accuracy.py
+
+Output saved to:
+figures/epsilon_vs_accuracy.png
+figures/epsilon_vs_accuracy.svg
+
+### 4️ Full reproduction (slower; full Appendix A)
+python run_privacy_accounting.py --epochs 15 --batch 128 --out results/eps_results_final.csv
+python plot_epsilon_vs_accuracy.py
+
+
+## Decision Matrix (Practitioner Tool)
+
+decision_matrix.csv compares major PPML frameworks across:
+
+- Threat coverage (MIAs, inversion, extraction, leakage, poisoning)
+- Techniques (DP, FL, SMPC, HE, hybrid)
+- Maturity + ecosystem support
+- Performance + scalability
+- Real-world adoption
+- Documentation & ease-of-use
+
+Each entry includes a provenance column clarifying whether values come from:
+
+- paper experiments (paper_run)
+- literature surveys (literature)
+- framework documentation (tool_doc)
+- external references (repo_link)
+
+
+## Experimental Reproducibility
+
+This repository includes:
+
+- Deterministic seeds for all runs
+- CSV logs for DP-SGD experiments
+- Full plotting script (IEEE-style)
+- A lightweight demo notebook
+- Clear environment + version pinning
+
+Hardware used for primary results:
+
+- GPU: Tesla T4 / RTX series
+- PyTorch ≥ 2.0
+- Opacus ≥ 1.1
+
+## Citation
+
 If you use this repository, please cite:
-@article{shareef2025threatdrivenppml,
-title={Threat-Driven Frameworks for Privacy-Preserving Machine Learning: A Practitioner’s Guide (2017–2025)},
-author={ Ahmed, Syed Ahsan and Shareef, Mohammed Saad},
-year={2025},
-journal={Preprint / Workshop Submission}
+
+@article{shareef2025ppmlsurvey,
+  title={Benchmarking the Practical Adoption of Privacy-Preserving ML: A Tool-Centric and Framework-Oriented Review (2017--2025)},
+  author={Ahmed,Syed Ahsan and Shareef,Mohammed Saad},
+  year={2025},
+  journal={Preprint/ Workshop Submission},
 }
 
----
+CITATION.cff is also provided.
 
-###  Future Work
-This repository will expand with the experimental follow-up paper:
-> *Secure and Private Fine-Tuning of LLMs with Parameter-Efficient Methods (DP + LoRA)*
+## License
 
-That companion repo (tentative name: Privtune-DP-LoRA-Benchmark) will benchmark Opacus + Flower for differential-privacy fine-tuning in non-IID settings.
+This project is released under the MIT License.
+You are free to reuse, modify, and distribute with attribution.
 
----
+## Contributing
 
-###  License
-This project is licensed under the *MIT* license.  
-You are free to reuse, modify, or distribute the material with appropriate credit.
-
----
-
-###  Contributing
 Pull requests are welcome for:
-- Adding new frameworks or metrics  
-- Extending case studies  
-- Correcting references or figures  
 
-To contribute:
-1. Fork this repository.  
-2. Create a branch (add-framework-xyz).  
-3. Submit a pull request with a short description
+- Extending the decision matrix
+- Adding new PPML frameworks
+- Improving plotting or reproducibility tools
+- Reporting errors in the threat→defense mappings
 
----
+## Contact
 
-###  Contact
-For correspondence or collaboration: 
-[LinkedIn: Syed Ahsan Ahmed](https://www.linkedin.com/in/syed-ahsan-ahmed-17475a290/)
-[LinkedIn: Mohammed Saad Shareef]((https://www.linkedin.com/in/mohammed-saad-shareef-019397265/))
+For collaboration or research inquiries:
+LinkedIn: https://www.linkedin.com/in/mohammed-saad-shareef-019397265/
+LinkedIn: https://www.linkedin.com/in/syed-ahsan-ahmed-17475a290/

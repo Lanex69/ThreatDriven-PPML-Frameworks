@@ -6,7 +6,7 @@ Lords Institute of Engineering and Technology, Hyderabad, India
 
  **One-Page Research Summary**  
 For a quick overview, reviewers and professors can read the concise 1-page summary:  
-👉 **[Download Summary (PDF)](paper/Research-Summary.pdf)**
+👉 **[Download Research Summary (PDF)](paper/Research-Summary.pdf)**
 
 
 ---
